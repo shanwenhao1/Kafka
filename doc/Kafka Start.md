@@ -32,6 +32,8 @@
 
 - 创建一个topic
     ```bash
+    // replication-factor代表每个分区在集群中复制的份数(要小于集群服务器数量)
+    // partitions 表示创建主题的分区数量(分区越大, 性能越好)
     > bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
     ```
 - 查看是否成功
@@ -115,5 +117,20 @@ run the producer并测试通过控制台发送一些消息至Kafka服务
     > bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic my-replicated-topic
     ```
     
-### <u>Step7: Use Kafka Connect to import/export data
-    
+### <u>Step7: Use Kafka Connect to import/export data</u>
+
+Kafka connect可作为导入导出数据的工具. 
+
+以下范例通过Kafka connect可将data从文件导入至topic或者将data从topic导出至文件.
+```bash
+> bin/connect-standalone.sh config/connect-standalone.properties config/connect-file-source.properties config/connect-file-sink.properties
+// 查看kafka topic connect-test的数据
+> bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic connect-test --from-beginning
+```
+
+### <u>Step8: Use Kafka Streams to process data</u>
+
+`Kafka Streams` 是用于构建关键任务的实时应用程序和微服务的client library, 其输入和输出数据存储于Kafka集群中.
+Kafka Streams在客户端中结合了编写简易性, java的标准部署以及Scala application. 这使得Kafka服务集群具有高度的可
+伸缩性、弹性、容错性、分布式性等优点. [该例](http://kafka.apache.org/21/documentation/streams/quickstart)可以
+帮助你快速入门.
