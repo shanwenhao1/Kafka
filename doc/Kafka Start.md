@@ -32,13 +32,15 @@
 
 - 创建一个topic
     ```bash
-    // replication-factor代表每个分区在集群中复制的份数(要小于集群服务器数量)
-    // partitions 表示创建主题的分区数量(分区越大, 性能越好)
+    # replication-factor代表每个分区在集群中复制的份数(要小于集群服务器数量)
+    # partitions 表示创建主题的分区数量(分区越大, 性能越好)
     > bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
     ```
 - 查看是否成功
     ```bash
     > bin/kafka-topics.sh --list --zookeeper localhost:2181
+    # ACL模式
+    > bin/kafka-topics.sh
     ```
     可以设置自动创建主题(当访问一个不存在的主题时)
     

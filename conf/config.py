@@ -12,7 +12,7 @@ from Kafka_tool.enum.cfg_enum import KaCfgType
 from Kafka_tool.enum.status_enum import ActionStatus
 
 # Zookeeper服务地址
-zk_address = "http://localhost:8081/zk_node/"
+ZkAddress = "http://localhost:8081/zk_node/"
 
 
 class BaseConfig(object):
@@ -55,7 +55,7 @@ class Config(BaseConfig):
         }
         # 请求ZooKeeper服务器, 获取相应的节点配置信息
         try:
-            req = requests.post(zk_address, data=req_data)
+            req = requests.post(ZkAddress, data=req_data)
             resp = req.json()
         except:
             raise ActionError("Zk Server Error, Init Kafka server error!!!")
