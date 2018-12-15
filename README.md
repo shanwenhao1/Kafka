@@ -13,6 +13,8 @@ Kafka是一个分布式的、可分区的、可复制的消息系统. 除了提�
 
 ### [Kafka快速配置](doc/Kafka%20Start.md)
 
-#### [Kafka Security](doc/Kafka%20Security.md)
+#### [Kafka Security模式下配置集群brokers](doc/Kafka%20Security.md)
+- SSL认证模式, 暂时弃用
+- SASL认证模式
 
 ### [Kafka Python](doc/Kafka%20python.md)
