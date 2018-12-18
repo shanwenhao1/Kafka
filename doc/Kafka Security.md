@@ -35,8 +35,8 @@ kafka的权限认证范围包含:
 
 #### 配置kafka kerberos节点认证
 
-- 配置Broker
-    - 在config目录下创建kafka_server_jaas.conf, 其中Client是认证zookeeper的
+- 配置Broker(经过配置后Kafka集群服务就起来了)
+    - 在config目录下创建kafka_server_jaas.conf, 其中Client是认证zookeeper的, [文件](confFile/kafka_server_jaas.conf)
         ```bash
             KafkaServer {
                     com.sun.security.auth.module.Krb5LoginModule required
@@ -53,7 +53,7 @@ kafka的权限认证范围包含:
                     principal="zkClient@EXAMPLE.COM";
             };
         ```
-    - 修改bin/kafka-server-start.sh, 添加jaas文件至启动参数, 使其可被broker找到
+    - 修改bin/kafka-server-start.sh, 添加jaas文件至启动参数, 使其可被broker找到, [文件](confFile/kafka-server-start.sh)
         ```bash
            # 或者不用if判断, 直接export
            if [ "x$KAFKA_OPTS"  ]; then
@@ -61,11 +61,13 @@ kafka的权限认证范围包含:
            fi
         ```
     - 修改Broker配置文件server.properties, 添加
-        - 配置SASL端口和机制
+        - 配置SASL端口和机制, [broker1](confFile/server.properties), [broker2](confFile/server-1.properties), [broker3](confFile/server-2.properties)
             ```bash
             broker.id=0
-            #advertised.host.name=192.168.1.89
-            #advertised.listeners=SASL_PLAINTEXT://192.168.1.89:9092
+            # 启用外网监听ip(因为kafka broker启动时, 会在zk上注册自己的IP, 如果不配置advertised.host.name
+            # 会导致访问不到, 且服务启动不成功)
+            advertised.host.name=192.168.1.89
+            advertised.listeners=SASL_PLAINTEXT://192.168.1.89:9092
             listeners=SASL_PLAINTEXT://:9092
             security.inter.broker.protocol=SASL_PLAINTEXT
             sasl.enabled.mechanisms=GSSAPI
@@ -111,7 +113,7 @@ kafka的权限认证范围包含:
         ```
 
 
-### 基于SSL的加密与认证
+### 基于SSL的加密与认证(不采用, 未经过实测)
 
 [Doc](http://kafka.apache.org/documentation/#security_ssl)
 
