@@ -18,3 +18,6 @@ Kafka是一个分布式的、可分区的、可复制的消息系统. 除了提�
 - SASL认证模式
 
 ### [Kafka Python](doc/Kafka%20python.md)
+
+## 杂谈
+- [Kafka深度好文](https://blog.csdn.net/lizhitao/article/details/39499283#commentBox)

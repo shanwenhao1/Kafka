@@ -35,7 +35,7 @@ kafka的权限认证范围包含:
 
 #### 配置kafka kerberos节点认证
 
-- 配置Broker(经过配置后Kafka集群服务就起来了)
+- `配置Broker`(经过配置后Kafka集群服务就起来了)
     - 在config目录下创建kafka_server_jaas.conf, 其中Client是认证zookeeper的, [文件](confFile/kafka_server_jaas.conf)
         ```bash
             KafkaServer {
@@ -74,6 +74,9 @@ kafka的权限认证范围包含:
             sasl.mechanism.inter.broker.protocol=GSSAPI
             # 配置服务器名称, 必须与kerberos的principal(kafka/192.168.1.89@EXAMPLE.COM)名称一致
             sasl.kerberos.service.name=kafka
+            # 启用acl权限验证
+            authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer
+            super.users=User:kafka
             
             # 修改zookeeper连接设置
             zookeeper.connect=192.168.1.89:2181,192.168.1.89:2182,192.168.1.89:2183
@@ -81,19 +84,22 @@ kafka的权限认证范围包含:
             zookeeper.connection.timeout.ms=60000
             # 也可根据自己需求更改log.dir等
             ```
-- 配置客户端
+            
+至此, 服务端的kerberos配置就算完成了. 如果需要测试(用脚本的方式)的话则继续以下配置
+
+- `配置客户端`
     - 修改producer.properties和consumer.properties
         ```bash
         # 集群
-        bootstrap.servers=localhost:9092,localhost:9093,localhost:9094
+        bootstrap.servers=192.168.1.89:9092,192.168.1.89:9093,192.168.1.89:9094
         ecurity.protocol=SASL_PLAINTEXT
         sasl.mechanism=GSSAPI
         sasl.kerberos.service.name=kafka
         
-        sasl.jaas.config=com.sun.security.auth.module.Krb5LoginModule required \
-        useKeyTab=true \
-        storeKey=true  \
-        keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/kafka.keytab" \
+        sasl.jaas.config=com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/kafka.keytab"
         principal="kafka/192.168.1.89@EXAMPLE.COM";
 
         
@@ -110,10 +116,27 @@ kafka的权限认证范围包含:
                     keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/kafka.keytab"
                     principal="kafka/192.168.1.89@EXAMPLE.COM";
             };
+            Client {
+                    com.sun.security.auth.module.Krb5LoginModule required
+                    useKeyTab=true
+                    storeKey=true
+                    serviceName="zookeeper"
+                    keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/kafka.keytab"
+                    principal="kafka/192.168.1.89@EXAMPLE.COM";
+            };
+
+        ```
+- 测试security model
+    - 修改bin/kafka-console-producer.sh, 加入
+        ```bash
+        export KAFKA_OPTS="-Djava.security.krb5.conf=/etc/krb5.conf -Djava.security.auth.login.config=/home/swh/Kafka/kafka_2.11-2.0.0/config/kafka_client_jaas.conf"
+        # 使用命令启动producer控制台
+        bin/kafka-console-producer.sh --broker-list 192.168.1.89:9092 --topic test --producer.config config/producer.properties
         ```
 
+### 基于SSL的加密与认证
 
-### 基于SSL的加密与认证(不采用, 未经过实测)
+`基于SSL的加密认证方式未经过实测, 暂时不采用`
 
 [Doc](http://kafka.apache.org/documentation/#security_ssl)
 
