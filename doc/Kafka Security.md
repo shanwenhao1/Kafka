@@ -25,6 +25,7 @@ kafka的权限认证范围包含:
 
 - 创建kafka keytab(最好对Kafka每个节点都创建一个principle)
     ```bash
+    addprinc -randkey GSSAPI/192.168.1.89@EXAMPLE.COM
     addprinc -randkey kafka/192.168.1.89@EXAMPLE.COM
     ktadd -k /home/swh/Kerberos/kafka.keytab kafka/192.168.1.89@EXAMPLE.COM
     ```
