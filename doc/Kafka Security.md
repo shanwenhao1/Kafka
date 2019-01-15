@@ -1,6 +1,7 @@
+@[TOC]
+
 # Kafka Security
 
-@TOC
 - [中文文档](#中文文档)
     - [基于SASL/Kerberos认证](#基于SASL/Kerberos认证)
         - [创建Kafka kerberos principals](#创建Kafka kerberos principals)
@@ -23,15 +24,10 @@ kafka的权限认证范围包含:
 
 #### 创建Kafka kerberos principals
 
-- 创建kafka keytab(最好对Kafka每个节点都创建一个principle)
-    ```bash
-    addprinc -randkey GSSAPI/192.168.1.89@EXAMPLE.COM
-    addprinc -randkey kafka/192.168.1.89@EXAMPLE.COM
-    ktadd -k /home/swh/Kerberos/kafka.keytab kafka/192.168.1.89@EXAMPLE.COM
-    ```
+参考zookeeper项目中创建principals示例, 直接引用zookeeper项目中的all.keytab
 - 将keytab文件拷贝至Kafka集群的每个节点上
     ```bash
-    sudo scp kafka.keytab swh@192.168.1.89:/home/swh/Kafka/kafka_2.11-2.0.0
+    sudo scp all.keytab swh@192.168.1.89:/home/swh/Kafka/kafka_2.11-2.0.0
     ```
 
 #### 配置kafka kerberos节点认证
@@ -43,15 +39,15 @@ kafka的权限认证范围包含:
                     com.sun.security.auth.module.Krb5LoginModule required
                     useKeyTab=true
                     storeKey=true
-                    keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/kafka.keytab"
+                    keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/all.keytab"
                     principal="kafka/192.168.1.89@EXAMPLE.COM";
             };
             Client {
                     com.sun.security.auth.module.Krb5LoginModule required
                     useKeyTab=true
                     storeKey=true
-                    keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/zkClient.keytab"
-                    principal="zkClient@EXAMPLE.COM";
+                    keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/all.keytab"
+                    principal="kafka/192.168.1.89@EXAMPLE.COM";
             };
         ```
     - 修改bin/kafka-server-start.sh, 添加jaas文件至启动参数, 使其可被broker找到, [文件](confFile/kafka-server-start.sh)
@@ -69,15 +65,15 @@ kafka的权限认证范围包含:
             # 会导致访问不到, 且服务启动不成功)
             advertised.host.name=192.168.1.89
             advertised.listeners=SASL_PLAINTEXT://192.168.1.89:9092
-            listeners=SASL_PLAINTEXT://:9092
+            listeners=SASL_PLAINTEXT://192.168.1.89:9092
             security.inter.broker.protocol=SASL_PLAINTEXT
             sasl.enabled.mechanisms=GSSAPI
             sasl.mechanism.inter.broker.protocol=GSSAPI
             # 配置服务器名称, 必须与kerberos的principal(kafka/192.168.1.89@EXAMPLE.COM)名称一致
             sasl.kerberos.service.name=kafka
             # 启用acl权限验证
-            authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer
-            super.users=User:kafka
+            # authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer
+            # super.users=User:kafka
             
             # 修改zookeeper连接设置
             zookeeper.connect=192.168.1.89:2181,192.168.1.89:2182,192.168.1.89:2183
@@ -114,15 +110,18 @@ kafka的权限认证范围包含:
                     com.sun.security.auth.module.Krb5LoginModule required
                     useKeyTab=true
                     storeKey=true
-                    keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/kafka.keytab"
+                    useTicketCache=false
+                    serviceName=kafka
+                    keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/all.keytab"
                     principal="kafka/192.168.1.89@EXAMPLE.COM";
             };
             Client {
                     com.sun.security.auth.module.Krb5LoginModule required
                     useKeyTab=true
                     storeKey=true
-                    serviceName="zookeeper"
-                    keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/kafka.keytab"
+                    useTicketCache=false
+                    serviceName=kafka
+                    keyTab="/home/swh/Kafka/kafka_2.11-2.0.0/all.keytab"
                     principal="kafka/192.168.1.89@EXAMPLE.COM";
             };
 

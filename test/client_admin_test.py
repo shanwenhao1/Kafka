@@ -29,5 +29,12 @@ class TestClientAdmin(TestCase):
         :return:
         """
         with ClientAdmin() as client:
-            print("=================")
             client.create_topic(self.test_topic)
+
+    def test_delete_topic(self):
+        """
+        测试kafka集群删除topic
+        :return:
+        """
+        with ClientAdmin() as client:
+            client.delete_topic(self.test_topic)

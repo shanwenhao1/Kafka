@@ -14,11 +14,9 @@ def main():
     :return:
     """
     log.tag_info(InitSer.InitLog, "Init Log okay")
-    from infra.conf.kafka_cfg import Config
-    print(Config(), Config(), Config.cfg)
-    log.info("----=====1")
-    log.info("----=====2")
-    log.info("----=====3")
+    # from domain.model.client_admin_model import ClientAdmin
+    # with ClientAdmin() as client:
+    #     pass
 
 
 if __name__ == '__main__':

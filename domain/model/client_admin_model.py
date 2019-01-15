@@ -20,10 +20,11 @@ class ClientAdmin:
         self.cfg = Config().cfg
         self.admin_client = KafkaAdminClient(
             bootstrap_servers=self.cfg["serList"],
-            api_version=self.cfg["apiVersion"],
+            # api_version=self.cfg["apiVersion"],
+            api_version_auto_timeout_ms=self.cfg["autoVersionTimeout"],
             security_protocol=self.cfg["protocol"],
             sasl_mechanism=self.cfg["mechanism"],
-            sasl_kerberos_service_name=self.cfg["mechanism"],
+            sasl_kerberos_service_name=self.cfg["kerverosSerName"]
         )
         return self
 
@@ -37,6 +38,7 @@ class ClientAdmin:
         :return:
         """
         topic_list = [topic_name]
+        # TODO change topic_list to a object
         self.admin_client.create_topics(topic_list, timeout_ms=TIME_OUT)
 
     def delete_topic(self, topic_name: str):

@@ -9,13 +9,16 @@ from infra.tool.enum.cfg_enum import KaCfgType
 from infra.kafka_functool.singleton import singleton
 
 
-# 本地kafka config
+# 本地kafka config,
+# apiVersion可由kafka-python内部函数自动获取, 不使用apiVersion时则需要考虑网络延时合理配置autoVersionTimeout参数.
+# 使用配置的话只是提高一点性能(注意: 如果需要配置一定确保正确)
 KafkaConfig = {
-    "serList": ["192.168.1.89:9092", "192.168.1.89:9093", "192.168.1.89:9094"],
-    "apiVersion": [2, 11, 2],
-    "protocol": "SASL_PLAINTEXT",
-    "mechanism": "GSSAPI",
-    "kerverosSerName": "kafka"
+    "serList":              ["192.168.1.89:9092", "192.168.1.89:9093", "192.168.1.89:9094"],
+    "apiVersion":           [1, 0, 0],
+    "autoVersionTimeout":   2000,
+    "protocol":             "SASL_PLAINTEXT",
+    "mechanism":            "GSSAPI",
+    "kerverosSerName":      "kafka"
 }
 
 

@@ -11,19 +11,18 @@ pip3 install gssapi
 
 - 注意: 本项目需要以root权限运行(因为我用的kerberos配置都是用的root), 
 如果是在windows下使用用pycharm的远程调试功能运行程序.则应进行以下配置:
-    - 在虚拟机新建脚本python3_sudo.sh, 并赋予执行权限 sudo chmod a+x python3_sudo.sh
+    - 更改root密码(如果知道则可不执行次步骤):
         ```bash
-        #! /bin/bash 
-        sudo python3 $*
+        sudo passwd root
         ```
-    - 编辑visudo(!!!注意: 为了防止操作失误, 最好编辑前拍摄虚拟机快照)
+    - 设置ssh, 允许root远程连接
         ```bash
-        sudo visudo
-        # 在最后一行输入
-        %sudo ALL=NOPASSWD: /usr/bin/python3
-        # 然后"ctrl+o", "enter", "ctrl+x"保存
+        # 编辑/etc/ssh/sshd_config, 添加
+            PermitRootLogin yes
+        # 重启ssh服务
+        /etc/init.d/ssh restart
         ```
-    - 最后配置pycharm将Project Interpreter指向脚本
+    - pycharm远程连接以root用户连接
 
 kafka-python 连接示例:
 - 注意运行前一定要确保本地已经使用过kinit 认证过kafka.keytab
