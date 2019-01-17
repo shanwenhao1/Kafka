@@ -71,6 +71,8 @@ kafka的权限认证范围包含:
             sasl.mechanism.inter.broker.protocol=GSSAPI
             # 配置服务器名称, 必须与kerberos的principal(kafka/192.168.1.89@EXAMPLE.COM)名称一致
             sasl.kerberos.service.name=kafka
+            # 允许彻底删除topic(而不是标记删除)
+            delete.topic.enable=true
             # 启用acl权限验证
             # authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer
             # super.users=User:kafka

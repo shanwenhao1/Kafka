@@ -34,6 +34,3 @@ def InitLog():
 
 
 Log = InitLog()
-
-if __name__ == '__main__':
-    InitLog().info("test log")

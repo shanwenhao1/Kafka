@@ -1,8 +1,8 @@
 import os
 import platform
 
-Log_Dir = os.path.dirname(os.path.abspath(__file__))
-Log_Path = os.path.join(Log_Dir, "kafka.log")
+Log_Dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+Log_Path = os.path.join(Log_Dir, "logs", "kafka.log")
 # 判断是否是windows
 Log_File = Log_Path.replace("/", "\\") if platform.architecture()[1].rfind("Windows") == 0 else Log_Path
 
