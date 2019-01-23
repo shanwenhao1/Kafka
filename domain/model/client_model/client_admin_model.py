@@ -5,12 +5,12 @@
 
 from kafka import KafkaAdminClient
 from kafka.admin import NewTopic
-from kafka.errors import TopicAlreadyExistsError
+from kafka.errors import TopicAlreadyExistsError, UnknownTopicOrPartitionError
 from infra.conf.kafka_cfg import Config
 from infra import log
 from infra.tool.enum.kafka_enum import KafkaInfo, KafkaErr
 from infra.utils.error import ActionError
-from domain.model import TIME_OUT, TIME_OUT_ADMIN
+from domain.model.client_model import TIME_OUT_ADMIN
 
 # TODO Kafka-python Admin Create Topic has a error, wait for official fix it.
 """
@@ -79,7 +79,11 @@ class ClientAdmin:
         :return:
         """
         topic_list = [topic_name]
-        self.admin_client.delete_topics(topic_list, timeout_ms=TIME_OUT_ADMIN)
+        try:
+            self.admin_client.delete_topics(topic_list, timeout_ms=TIME_OUT_ADMIN)
+        except UnknownTopicOrPartitionError as e:
+            log.tag_error(KafkaInfo.KafkaAdmin, "Topic [%s] not exist! Don't need delete" % topic_name)
+            raise ActionError(KafkaErr.TopicNotExist)
 
     def create_partition(self):
         """

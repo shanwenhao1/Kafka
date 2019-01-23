@@ -5,7 +5,7 @@
 
 from kafka import KafkaProducer
 from kafka.errors import KafkaTimeoutError
-from domain.model import TIME_OUT
+from domain.model.client_model import TIME_OUT
 from infra import log
 from infra.conf.kafka_cfg import Config
 from infra.utils.error import ActionError
@@ -28,7 +28,7 @@ class Producer:
             api_version_auto_timeout_ms=self.cfg["autoVersionTimeout"],
             security_protocol=self.cfg["protocol"],
             sasl_mechanism=self.cfg["mechanism"],
-            sasl_kerberos_service_name=self.cfg["kerverosSerName"]
+            sasl_kerberos_service_name=self.cfg["kerverosSerName"],
         )
         return self
 
@@ -88,6 +88,7 @@ class Producer:
         :param topic:
         :param value:
         :param key:
+        :return:
         :return:
         """
         log.tag_error(KafkaInfo.KafkaProducer, "Kafka send data failed, topic: %s, "

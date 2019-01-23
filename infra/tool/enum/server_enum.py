@@ -9,3 +9,7 @@ InitSer = Enum(
     InitLog="Init Server Log",
     InitZk="Init Server Zookeeper"
 )
+
+InquireErr = Enum(
+    TimeOut="Time Out"
+)

@@ -11,17 +11,34 @@ from infra.utils.error import ActionError
 
 
 def get_now_time(need_ms=False):
-    """获取当前时间current time
-    @:param needMs bool 如果为True,则保留毫秒,否则毫秒置为0
+    """
+    获取当前时间current time
+    :param: need_ms bool 如果为True,则保留毫秒,否则毫秒置为0
+    :return
     """
     if need_ms:
         return datetime.datetime.now()
     return datetime.datetime.now().replace(microsecond=0)
 
 
+def get_now_time_timestamp(need_ms=False):
+    """
+    获取当前时间timestamp值
+    :param need_ms: 为True时保留毫秒
+    :return:
+    """
+    if need_ms:
+        now_time = datetime.datetime.now()
+    else:
+        now_time = datetime.datetime.now().replace(microsecond=0)
+    return datetime_to_timestamp(now_time)
+
+
 def get_int_time(last_time=0):
-    """只给业务逻辑使用
-    :param last_time 用来获取相差的时间
+    """
+    只给业务逻辑使用
+    :param: last_time 用来获取相差的时间
+    :return:
     """
     if not last_time:
         last_time = 0
@@ -40,7 +57,11 @@ def get_total_second(dt):
 
 
 def is_pass_day(dt):
-    """判断某个日期是否在今天之前"""
+    """
+    判断某个日期是否在今天之前
+    :param dt:
+    :return:
+    """
     ct = get_now_time()
     if dt < ct.replace(hour=0, minute=0, second=0):
         return True
@@ -54,7 +75,11 @@ def time_str_to_timestamp(time_str):
 
 
 def timestamp_to_datetime(timestamp):
-    """时间戳转换为时间对象"""
+    """
+    时间戳转换为时间对象
+    :param timestamp:
+    :return:
+    """
     return datetime.datetime.fromtimestamp(timestamp)
 
 
@@ -70,6 +95,9 @@ def datetime_to_str(input_time, time_format="%Y-%m-%d %H:%M:%S"):
 def str_to_datetime(time_str, raise_error=False):
     """
     "2017-04-06 14:06:51" 字符串转日期时间对象
+    :param time_str:
+    :param raise_error:
+    :return:
     """
     try:
         dt = parser.parse(time_str)
