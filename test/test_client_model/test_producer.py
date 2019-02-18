@@ -8,7 +8,7 @@ import json
 from domain.model.client_model.producer_model import Producer
 from domain.model.client_model.client_admin_model import ClientAdmin
 from domain.model.client_model import TIME_OUT
-from test.test_client_admin import TestClientAdmin
+from test.test_client_model.test_client_admin import TestClientAdmin
 
 
 class TestProducer(unittest.TestCase):

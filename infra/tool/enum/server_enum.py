@@ -11,5 +11,6 @@ InitSer = Enum(
 )
 
 InquireErr = Enum(
-    TimeOut="Time Out"
+    TimeOut="Time Out",
+    OffsetErr="Offset Err"
 )

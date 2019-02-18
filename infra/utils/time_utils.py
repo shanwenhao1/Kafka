@@ -27,11 +27,12 @@ def get_now_time_timestamp(need_ms=False):
     :param need_ms: 为True时保留毫秒
     :return:
     """
+    now_time = get_now_time(need_ms=True)
     if need_ms:
-        now_time = datetime.datetime.now()
+        timestamp = int(now_time.timestamp() * 1000)
     else:
-        now_time = datetime.datetime.now().replace(microsecond=0)
-    return datetime_to_timestamp(now_time)
+        timestamp = int(now_time.timestamp())
+    return timestamp
 
 
 def get_int_time(last_time=0):

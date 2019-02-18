@@ -7,7 +7,7 @@ import json
 import unittest
 from domain.model.client_model.consumer_model import Consumer
 from domain.model.client_model.producer_model import Producer
-from test.test_client_admin import TestClientAdmin
+from test.test_client_model.test_client_admin import TestClientAdmin
 from infra.utils.time_utils import get_now_time_timestamp
 
 
