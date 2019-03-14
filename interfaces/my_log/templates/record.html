@@ -1,0 +1,146 @@
+<!--继承base.html-->
+{% extends "home.html" %}
+
+<!--block.super继承-->
+{% block head_title %} {{ super() }} {% endblock %}
+
+
+{% block jumbotron %}
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <!--导入record.js-->
+                <script type="text/javascript" src="{{ url_for('my_log.static', filename='my_static/js/record.js') }}"></script>
+                <!--导入第三方json工具 https://github.com/josdejong/jsoneditor-->
+                <!--<link href="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/jsoneditor.min.js')}}" rel="stylesheet" type="text/css">-->
+                <!--<script type="text/javascript" src="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/jsoneditor.min.js')}}"></script>-->
+                <!--<script type="text/javascript" src="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/jsoneditor-minimalist.min.js')}}"></script>-->
+                <!--<script type="text/javascript" src="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/img/jsoneditor-icons.svg')}}"></script>-->
+                <!--topic选项框-->
+                {% block TOPIC %}
+                    <div class="col-sm-3">
+                        <p>Topic</p>
+                        <select name="Topic" id="topicChoice" style="background: #CA5F23" onchange="refresh(true)">
+                            <option value="{{ currentTopic }}" id="currentTopic">{{ currentTopic }}</option>
+                            {% for topic in topics%}
+                                {% if topic != currentTopic %}
+                                    <option value="{{ topic }}">{{ topic }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endblock %}
+
+                <!--msgKey选项框-->
+                {% block MSGKEY %}
+                    <div class="col-sm-3">
+                        <p>MsgKey</p>
+                        <select name="MsgKey" id="msgKeyChoice" style="background: #CA5F23" onchange="refresh(false)">
+                            <option value="{{ currentMsgKey }}" id="currentMsgKey">{{ currentMsgKey }}</option>
+                            {% for msg_key in msgKeys %}
+                                {% if msg_key != currentMsgKey %}
+                                    <option value="{{ msg_key }}">{{ msg_key }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endblock %}
+
+                <!--时间选项框-->
+                {% block TIME %}
+                    <div class="col-sm-3">
+                        <p>Time</p>
+                        <input type="datetime-local" step="01" id="filterTime" name="filterTime" value="{{ filterTime }}" style="background: #CA5F23" />
+                    </div>
+
+                <!--重置查询条件-->
+                {% endblock %}
+                    <div class="col-sm-3">
+                        <p>&nbsp;</p>
+                        <input type="button" id="refresh" onclick="refresh(false)" value="重置" style="background: #CA5F23" />
+                    </div>
+                {% block REFRESH %}
+
+                {% endblock %}
+
+                <!--查询出的记录-->
+                {% block record %}
+                    <table class="col-sm-12">
+                        <tr>
+                            <td class="col-sm-2">Topic</td>
+                            <td class="col-sm-2">偏移量</td>
+                            <td class="col-sm-2">消息时间</td>
+                            <td class="col-sm-6">消息详情</td>
+                        </tr>
+                    </table>
+
+                    <div id="recordContainer">
+                        <table class="col-sm-12">
+                            {% for _record in records %}
+                                <tr>
+                                    <td class="col-sm-2">{{ _record.topic }}</td>
+                                    <td class="col-sm-2">{{ _record.offset }}</td>
+                                    <td class="col-sm-2">{{ _record.msgTime }}</td>
+                                    <td class="col-sm-6">{{ _record.message }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                {% endblock %}
+
+                <div id="offsetLast">
+                    {% if records %}
+                        <input type="hidden" id="offset" name="offset" value="{{ records[-1].offset }}" />
+                    {% else %}
+                        <input type="hidden" id="offset" name="offset" value="0" />
+                    {% endif %}
+                </div>
+
+                <script type="text/javascript">
+                    // 是否无鼠标滚轮事件处理中, 为true表示允许下滑刷新
+                    // 节流函数(用来处理短时间内滚轮多次触发问题)
+                    function throttle(method, delay, duration){
+                        var timer = null;
+                        var begin = new Date();
+                        return function () {
+                            var context = this, args = arguments;
+                            var current = new Date();
+                            clearTimeout(timer);
+                            if(current - begin >= duration){
+                                method.apply(context, args);
+                                begin = current;
+                            }else{
+                                timer = setTimeout(function () {
+                                    method.apply(context, args);
+                                }, delay);
+                            }
+                        }
+                    }
+                    function scrollFunc(e){
+                        // var direct=0;
+                        e=e || window.event;
+                        // 定义一个标志, 当滚轮向下滚动时, 执行某些操作
+                        var down = true;
+                        // IE/Opera/Chrome is e.wheelDelta, Firefox is e.detail
+                        down = e.wheelDelta ? e.wheelDelta < 0 : e.detail > 0;
+                        if (down) {
+                            if (getScrollTop() + getWindowHeight() == getScrollHeight()) {
+                                // 鼠标下滑处理函数
+                                scrollFunction();
+                            }
+                        }
+                    }
+                    window.onmousewheel = throttle(scrollFunc, 1000, 3000);
+                    // /*注册事件*/
+                    // if(document.addEventListener){
+                    //     document.addEventListener('DOMMouseScroll',scrollFunc,false);
+                    // }//W3C
+                    // window.onmousewheel=document.onmousewheel=scrollFunc;//IE/Opera/Chrome/Safari
+                </script>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %} {{ super() }} {% endblock %}

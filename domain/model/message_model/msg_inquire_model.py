@@ -37,7 +37,8 @@ class MsgInquire:
             key_partition = self.get_default_partition_by_key(key_byte, consumer)
             partitions = [(self.topic, key_partition)]
             consumer.assign(partitions)
-            # 当前的offset(一般是最后)
+            # seek offset to the end
+            consumer.seek_many(partitions, is_begin=False)
             last_offset = consumer.position(partitions[0])
             if last_offset == 0:
                 return []
@@ -45,10 +46,10 @@ class MsgInquire:
             if offset > last_offset:
                 raise ActionError(InquireErr.OffsetErr)
             current_offset = offset
-            records = self._get_msg(consumer, key, current_offset, key_partition, need_num, timestamp)
+            records = self._get_msg_by_key(consumer, key, current_offset, key_partition, need_num, timestamp)
         return records
 
-    def _get_msg(self, consumer: Consumer, key: str, offset: int, key_partition: int, need_num: int, timestamp: int):
+    def _get_msg_by_key(self, consumer: Consumer, key: str, offset: int, key_partition: int, need_num: int, timestamp: int):
         """
         获取消息(倒序查询), 我们用key区分topic下的具体消息
         :param consumer:

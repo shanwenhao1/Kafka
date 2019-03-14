@@ -1,0 +1,48 @@
+<!--继承base.html-->
+{% extends "home.html" %}
+
+
+<!--block.super继承-->
+{% block head_title %} {{ super() }} {% endblock %}
+
+
+{% block jumbotron %}
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                {% block HomeLeft %}{{ super() }}{% endblock %}
+
+                {% block HomeRight %}
+                    <div class="col-sm-4 pull-right">
+                        <!--<iframe width="560" height="315" src="https://www.youtube.com/embed/dUdbGQ1K8pE" frameborder="0" allowfullscreen></iframe>-->
+                        <!--<video width="500" height="315" controls="controls" src="#" type="video/mp4"></video>-->
+                    {#                    width="100%"表示按照百分比进行填充#}
+                        {% if not current_user.is_authenticated %}
+                            {% if Check == "" %}
+                                <form action="" method="post" style="color: black">
+                                    <p>
+    {#                                            对齐的话可用全角空格进行对齐#}
+                                        <label for="user_name" style="color: #e6ff2d">name　　</label>
+                                        <input type="text" name="user_name" placeholder="user_name" autofocus required/>
+                                    </p>
+                                     <p>
+                                         <label for="password" style="color: #e6ff2d">password</label>
+                                         <input type="password" name="password" placeholder="6-16 字母和数字的组合" autofocus required/>
+                                     </p>
+                                    <input type="submit" value="confirm" style="color: #c9302c"/>
+                                </form>
+                            {% else %}
+                                <p>{{ Check }}</p>
+                            {% endif %}
+                        {% else %}
+                            <p> 你已登录</p>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %} {{ super() }} {% endblock %}

@@ -1,0 +1,26 @@
+<!--继承base.html-->
+{% extends "home.html" %}
+
+
+<!--block.super继承-->
+{% block head_title %} {{ super() }} {% endblock %}
+
+
+{% block jumbotron %}
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                {% block HomeLeft %}{{ super() }}{% endblock %}
+
+                {% block HomeRight %}
+                    <div class="col-sm-4 pull-right">
+                        <p>{{ errMsg }}</p>
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %} {{ super() }} {% endblock %}

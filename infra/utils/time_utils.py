@@ -69,18 +69,16 @@ def is_pass_day(dt):
     return False
 
 
-def time_str_to_timestamp(time_str):
-    time_array = time.strptime(time_str, "%Y-%m-%d %H:%M:%S")
-    timestamp = int(time.mktime(time_array))
-    return timestamp
-
-
 def timestamp_to_datetime(timestamp):
     """
     时间戳转换为时间对象
     :param timestamp:
     :return:
     """
+    if len(str(timestamp)) == 13:
+        timestamp = int(timestamp / 1000)
+    if len(str(timestamp)) != 10:
+        raise ValueError
     return datetime.datetime.fromtimestamp(timestamp)
 
 
@@ -159,7 +157,7 @@ def get_different_seconds(dt, str_time=False):
 def datetime_to_timestamp(t):
     """datetime转化为时间戳"""
     time_str = datetime_to_str(t)
-    return time_str_to_timestamp(time_str)
+    return str_time_to_float(time_str)
 
 
 def get_rank_time(t=None):
@@ -209,20 +207,26 @@ def combine_date_and_time(date, combine_time):
     return datetime.datetime.combine(date, combine_time)
 
 
-def str_time_to_float(str_time):
+def str_time_to_float(str_time, time_format="", need_ms=False):
     """
     将str类型的时间转换为float型
     :param str_time:
+    :param time_format:
+    :param need_ms: 是否精确到毫秒
     :return:
     """
-    try:
-        time_format = "%Y-%m-%d %H:%M:%S.%f"
+    if time_format == "":
+        try:
+            time_format = "%Y-%m-%d %H:%M:%S.%f"
+            time_tuple = time.strptime(str_time, time_format)
+        except:
+            time_format = "%Y-%m-%d %H:%M:%S"
+            time_tuple = time.strptime(str_time, time_format)
+    else:
         time_tuple = time.strptime(str_time, time_format)
-        float_time = time.mktime(time_tuple)
-    except:
-        time_format = "%Y-%m-%d %H:%M:%S"
-        time_tuple = time.strptime(str_time, time_format)
-        float_time = time.mktime(time_tuple)
+    float_time = time.mktime(time_tuple)
+    if need_ms:
+        float_time = float_time * 1000
     return float_time
 
 
@@ -256,4 +260,4 @@ def _sleep(timeout):
 
 
 if __name__ == '__main__':
-    print(time_str_to_timestamp("2018-10-15 11:39:38"))
+    print(str_time_to_float("2019-03-13T12:37:23", time_format="%Y-%m-%dT%H:%M:%S"))

@@ -1,0 +1,111 @@
+<!--继承base.html-->
+{% extends "base.html" %}
+
+<!--block.super继承-->
+{% block head_title %} {{ super() }} {% endblock %}
+
+
+<!--这里将其保存在了工作目录下的\css\custom.css文档中, 同时记得在head_css.html中加上<link href="" rel="stylesheet">-->
+<!--.text-align-center{
+    text-align:center;
+}-->
+
+<!--以下配置写在了css\navbar-static-top.css中
+
+在css文件中类似
+.navbar-default .navbar-brand {
+    color: #FFF;
+}
+这样的是调整各个区块的颜色    每次设置css文件后都要运行python manage.py collectstatic来保存设置-->
+<style xmlns="http://www.w3.org/1999/html">
+    {% block style %}
+        .navbar-static-top{
+            margin-bottom: 0px !important;
+        }
+        .jumbotron{
+            margin-bottom: 0px;
+            background-color: #4d5a37;
+            color: #FFFFFF;
+        }
+        .navbar-static-mid{
+            margin-bottom: 0px !important;
+        }
+        .content{
+            margin-bottom: 100px;
+            background-color: #4dfa37;
+            color: #000000;
+        }
+        .log{
+            color: #bf23ff;
+        }
+    {% endblock %}
+</style>
+
+<!--text-align-center为居中模式用法为加class="lead text-align-center"-->
+{% block jumbotron %}
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                {% block HomeLeft %}
+                    <div class="col-sm-8">
+                        <h1>我的Kafka Log</h1>
+                        <p>我的日志聚合主要是用来收集服务日志.</p>
+                        {% if not current_user.is_authenticated %}
+                            <p>
+                                <a class="btn btn-lg btn-primary" href="{{ url_for('my_log.login') }}" role="button">登录</a>
+                            </p>
+                        {% else %}
+                            <p>
+                                <a class="btn btn-lg btn-primary" href="{{ url_for('my_log.topic') }}" role="button">日志记录</a>
+                            </p>
+                        {%  endif %}
+                    </div>
+                {% endblock %}
+                <!--空出來一個位置來播放video之類的E:/CloudMusic/MV/梦回还.mp4-->
+                <!--有设置格式的视频<div class="col-sm-4 pull-right" style="background-color: black;height:315px;">-->
+                {% block HomeRight %}
+                    <div class="col-sm-4 pull-right">
+                        <video width="100%" height="100%" controls="controls">
+                            <source src="{{ url_for('my_log.static', filename='my_static/video/梦回还.mp4') }}" type="video/mp4" charset="utf-8">
+                        </video>
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+    <div class="col-sm-4 pull-left">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('my_log.static', filename='my_static/css/pure-css3-elephant-animation/css/styles.css') }}">
+
+        <div class="ele-container">
+          <div class="ele-wrapper">
+            <div class="ele-tail"></div>
+            <div class="ele-body">
+              <div class="ele-head">
+                <div class="ele-eyebrows"></div>
+                <div class="ele-eyes"></div>
+                <div class="ele-mouth"></div>
+                <div class="ele-fang-front"></div>
+                <div class="ele-fang-back"></div>
+                <div class="ele-ear"></div>
+              </div>
+            </div>
+            <div class="ele-leg-1 ele-leg-back">
+              <div class="ele-foot"></div>
+            </div>
+            <div class="ele-leg-2 ele-leg-front">
+              <div class="ele-foot"></div>
+            </div>
+            <div class="ele-leg-3 ele-leg-back">
+              <div class="ele-foot"></div>
+            </div>
+            <div class="ele-leg-4 ele-leg-front">
+              <div class="ele-foot"></div>
+            </div>
+          </div>
+        </div>
+    </div>
+{% endblock %}

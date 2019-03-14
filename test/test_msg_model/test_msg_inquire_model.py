@@ -5,7 +5,7 @@
 # @DSC     : test of msg inquire
 
 import unittest
-from infra.utils.time_utils import get_now_time_timestamp, get_another_time, time_str_to_timestamp, datetime_to_str
+from infra.utils.time_utils import get_now_time_timestamp
 from test.test_client_model.test_client_admin import TestClientAdmin
 from domain.model.message_model.msg_send_model import MsgSend
 from domain.model.message_model.msg_inquire_model import MsgInquire
@@ -20,7 +20,7 @@ class TestMsgInquire(unittest.TestCase):
         self.base_msg = "test msg"
         TestClientAdmin.mock_test_topic(TestClientAdmin.test_topic)
         msg = [self.base_msg + str(i) for i in range(0, 100)]
-        MsgSend(TestClientAdmin.test_topic, "test", msg).send_msg()
+        MsgSend(TestClientAdmin.test_topic, "test").send_msg_mul(msg)
 
     def tearDown(self):
         TestClientAdmin.mock_clear_topic(TestClientAdmin.test_topic)

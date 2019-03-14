@@ -239,13 +239,13 @@ class TestConsumer(unittest.TestCase):
             consumer.assign(partitions)
             with Producer() as producer:
                 producer.send_message(TestClientAdmin.test_topic, test_data_str.encode("utf-8"), "test_key")
-                producer.send_message(TestClientAdmin.test_topic, test_data_str.encode("utf-8"), "test_key_2")
+                producer.send_message(TestClientAdmin.test_topic, test_data_str.encode("utf-8"), "test_key")
             consumer.seek_many(partitions)
             self.assertEqual(consumer.position(partitions[0]), 0), "Test poll failed, seek many to begin failed"
             self.assertEqual(consumer.position(partitions[1]), 0), "Test poll failed, seek many to begin failed"
             self.assertEqual(consumer.position(partitions[2]), 0), "Test poll failed, seek many to begin failed"
             result = consumer.poll(100)
-            self.assertEqual(len(result), 2), "Test poll failed, missing data"
+            self.assertEqual(len(result[list(result.keys())[0]]), 2), "Test poll failed, missing data"
             for key, value in result.items():
                 self.assertEqual(value[0].topic, TestClientAdmin.test_topic), "Test poll failed, data error"
             offset_num = 0

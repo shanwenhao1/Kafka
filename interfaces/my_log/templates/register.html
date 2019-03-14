@@ -1,0 +1,57 @@
+<!--继承base.html-->
+{% extends "base.html" %}
+
+
+<!--block.super继承-->
+{% block head_title %} {{ super() }} {% endblock %}
+
+<style xmlns="http://www.w3.org/1999/html">
+{% block style %}
+    .navbar-static-end{
+        margin-bottom: 0px !important;
+    }
+    .row{
+        margin-top: -20px;
+        background-color: #4d5a37;
+        color: #e6ff2d;
+        min-height: 436px;
+    }
+{% endblock %}
+
+
+</style>
+{% block content %}
+    <div class="row">
+        {% if errMsg %}
+            <h1 class="text-align-center">{{ errMsg }}</h1>
+
+        {% else %}
+            <h1 class="text-align-center">注册</h1>
+            <div class="text-align-center">
+                <form action="" method="post" style="color: black">
+                    <p>
+    {#                    对齐的话可用全角空格进行对齐#}
+                        <label for="user_name" style="color: #e6ff2d">name　　</label>
+                        <input type="text" name="user_name" placeholder="user_name" autofocus required/>
+                    </p>
+                     <p>
+                         <label for="password" style="color: #e6ff2d">password</label>
+                         <input type="password" name="password" placeholder="6-16 字母和数字的组合" autofocus required/>
+                    </p>
+                     <p>
+                         <label for="email" style="color: #e6ff2d">email　　</label>
+                         <input type="text" name="email" placeholder="xx@xx.com" autofocus required/>
+                    </p>
+                     <p>
+                         <label for="sex" style="color: #e6ff2d">sex　　　　</label>
+    {#                     checked设置男性为预选值#}
+                         <input type="radio"  checked ="checked" name="sex" value="1" autofocus required/>男　　　　
+                         <input type="radio"  name="sex" value="2" autofocus required/>女　　　
+                    </p>
+                    <input type="submit" value="confirm" style="color: #c9302c"/>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

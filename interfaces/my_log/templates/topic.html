@@ -1,0 +1,41 @@
+<!--继承base.html-->
+{% extends "home.html" %}
+
+<!--block.super继承-->
+{% block head_title %} {{ super() }} {% endblock %}
+
+
+{% block jumbotron %}
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <!--导入topic.js-->
+                <script type="text/javascript" src="{{ url_for('my_log.static', filename='my_static/js/topic.js') }}"></script>
+                <!--导入第三方json工具 https://github.com/josdejong/jsoneditor-->
+                <!--<link href="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/jsoneditor.min.js')}}" rel="stylesheet" type="text/css">-->
+                <!--<script type="text/javascript" src="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/jsoneditor.min.js')}}"></script>-->
+                <!--<script type="text/javascript" src="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/jsoneditor-minimalist.min.js')}}"></script>-->
+                <!--<script type="text/javascript" src="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/img/jsoneditor-icons.svg')}}"></script>-->
+                <p>选择一个topic进行查询</p>
+                {% for topic in topics%}
+                    <form id="{{ topic }}" method="post" action="{{ url_for('my_log.record') }}" style="display:inline !important;">
+                        <input type="hidden" name="topic" value="{{ topic }}" />
+                        <input type="hidden" name="reqType" value=0 />
+                        <input type="submit" style="background: #1A5F23; color: #FFFFFF" value="{{ topic }}" />
+                    </form>
+                    <!--<input id="{{ topic }}" type="button" style="background: #1A5F23; color: #ffff00" value="{{ topic }}" onclick="topicClick('{{ topic }}')">-->
+                {% endfor %}
+                <!--{% block HomeLeft %}{{ super() }}{% endblock %}-->
+
+                <!--{% block HomeRight %}-->
+                    <!--<div class="col-sm-4 pull-right">-->
+                        <!--<p>document of kafka</p>-->
+                    <!--</div>-->
+                <!--{% endblock %}-->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %} {{ super() }} {% endblock %}

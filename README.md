@@ -21,3 +21,15 @@ Kafka是一个分布式的、可分区的、可复制的消息系统. 除了提�
 
 ## 杂谈
 - [Kafka深度好文](https://blog.csdn.net/lizhitao/article/details/39499283#commentBox)
+
+## 部署时发现的问题
+
+- kafka server.properties 中的log.dirs配置采用默认配置时, 在重启虚拟机的情况下会导致.log文件
+被重写从而导致topic数据丢失
+    - 问题发现:
+    ```bash
+    # 找到topic key数据存放的.log文件导出发现数据是存在的, .log文件大小也不为0. 重启后数据丢失
+    sudo ./kafka-run-class.sh kafka.tools.DumpLogSegments --files /tmp/kafka/kafka-logs-0/test-2/00000000000000000000.log --print-data-log > 000000.txt
+    ```
+    ![](doc/picture/kafka%20issue/flush%20error.png)
+    - 解决方案: 将log.dirs改为自定义目录

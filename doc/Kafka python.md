@@ -20,7 +20,7 @@ pip3 install gssapi
         # 编辑/etc/ssh/sshd_config, 添加
             PermitRootLogin yes
         # 重启ssh服务
-        /etc/init.d/ssh restart
+        /etc/init_db.d/ssh restart
         ```
     - pycharm远程连接以root用户连接
 

@@ -13,18 +13,25 @@ class MsgSend(BaseMsg):
     发送消息
     """
 
-    def __init__(self, topic: str, msg_key: str, msg: str or list):
-        super(MsgSend, self).__init__(topic, msg_key, msg)
+    def __init__(self, topic: str, msg_key: str):
+        super(MsgSend, self).__init__(topic, msg_key)
 
-    def send_msg(self):
+    def send_msg(self, msg: str):
         """
         发送msg
+        :param msg:
         :return:
         """
         with Producer() as producer:
-            if type(self.msg) is list:
-                for msg in self.msg:
-                    producer.send_message(self.topic, msg.encode("utf-8"), self.msg_key)
-            else:
-                producer.send_message(self.topic, self.msg.encode("utf-8"), self.msg_key)
+            producer.send_message(self.topic, msg.encode("utf-8"), self.msg_key)
+
+    def send_msg_mul(self, msg: list):
+        """
+        发送msg(多条)
+        :param msg:
+        :return:
+        """
+        with Producer() as producer:
+            for msg in msg:
+                producer.send_message(self.topic, msg.encode("utf-8"), self.msg_key)
 

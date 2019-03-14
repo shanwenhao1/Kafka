@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="cn">
+    <head>
+        <!--meta-->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="my kafka log">
+        <meta name="author" content="Wenhao Shan">
+        <!--icon为网页标签页的标签-->
+        <link rel="icon" href="{{ url_for('my_log.static', filename='my_static/img/ico/home.ico') }}" type="image/x-icon"/>
+        <!--% block %告诉本模板引擎可以被子模板重载-->
+        <!-- block + name 在同一个模板中重复定义-->
+        <title>
+            {% block head_title %}
+            {% endblock %}
+            我的Kafka日志聚合
+        </title>
+        <!--页面布局: 将css放入head_css.html中, 并在此处导入-->
+        {% include 'head_css.html' %}
+
+        <style>
+            {% block style %}
+            {% endblock %}
+        </style>
+    </head>
+
+    <body>
+        <!--调用 navbar.html,导航html, 包括一些处理url的引用等-->
+        {% include 'navbar.html' %}
+
+        {% block jumbotron %}
+        <!-- Main component for a primary marketing message or call to action -->
+        {% endblock %}
+
+        {% block content %}
+        {% endblock %}
+
+        <!--加fluid的为填满页面<div class="container-fluid">-->
+        <div class="container">
+        <!--这些block在home.html中实现具体功能-->
+        </div> <!-- /container -->
+
+        <!--引用一些第三方插件, 此处视频播放插件-->
+        {% include 'javascript.html' %}
+    </body>
+</html>

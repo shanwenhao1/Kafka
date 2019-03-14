@@ -1,0 +1,136 @@
+{% extends "home.html" %}
+
+<!--block.super继承-->
+{% block head_title %} {{ super() }} {% endblock %}
+
+{% block jumbotron %}
+    <!--导入json显示的js-->
+    <script type="text/javascript" src="{{ url_for('my_log.static', filename='my_static/js/json.js') }}"></script>
+    <!--导入第三方json工具 https://github.com/josdejong/jsoneditor-->
+    <link href="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/jsoneditor.min.js') }}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/jsoneditor.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/jsoneditor-minimalist.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('my_log.static', filename='static_root/jsoneditor/dist/img/jsoneditor-icons.svg') }}"></script>
+
+    {% if not current_user.is_authenticated %}
+        {{ super() }}
+    {% else %}
+        <div style="color: #ff8c00;">
+            <!--Markdown转html工具地址-->
+            <h1 align="center"><font size="6">我的kafka日志聚合说明文档</font></h1>
+
+            <br/><br/>
+            <h2><font size="5">Ⅰ.用前须知</font></h2>
+
+            <ul class="col-sm-offset-1">
+                <li>- 使用前先注册账户, 如果已有账户则需登录</li>
+                <li>- 请确认当前账户拥有足够的访问权限(相关topic的访问权限), 如果没有请联系管理员申请topic</li>
+                <li>- 使用前, 如有兴趣可了解kafka帮助你更加熟练使用, <a href="http://kafka.apache.org/documentation.html">官方文档</a></li>
+            </ul>
+
+            <br/><br/>
+            <h2><font size="5">Ⅱ.kafka使用说明</font></h2>
+
+            <br/>
+            <p class="col-sm-offset-1">本项目作为我的科技的日志聚合系统, 目标是提供一个方便的快捷的跨系统日志收集及查询服务.
+            但不考虑永久保留, 目前暂定日志保留7天. 如需保留更长周期, 请联系管理员进行配置</p>
+
+            <br/><br/>
+            <h3 class="col-sm-offset-1"><font size="4">a.生产数据</font></h3>
+
+            <br/>
+            <div class="col-sm-offset-2">
+                <p>1.kafka操作时按照topic进行操作的, 本日志聚合使用topic下的message key作为消息生成和消费的划分.
+                因此用户如有需求, 可自定义不通类型消息的message key(请慎重考虑, 关乎查询效率).</p>
+
+                <br/>
+                <p>2.请求地址: /my_log/send</p>
+
+                <br/>
+                <p>3.请求格式:</p>
+                <br/>
+                <table class="col-sm-12">
+                    <tr><td>参数</td><td>类型</td><td>参数说明</td></tr>
+                    <tr><td>username</td><td>str</td><td>消息所属的用户名</td></tr>
+                    <tr><td>verify</td><td>str</td><td>md5_id + timestamp生成的md5值, md5_id请向管理员提供用户名并索要</td></tr>
+                    <tr><td>timestamp</td><td>float</td><td>md5验证时的时间戳</td></tr>
+                    <tr><td>topic</td><td>str</td><td>消息所属的topic</td></tr>
+                    <tr><td>msgKey</td><td>str</td><td>消息类型</td></tr>
+                    <tr><td>msg</td><td>str</td><td>消息具体信息</td></tr>
+                    <tr id="request">
+                        <script type="text/javascript">
+                            var request = {
+                                "username": "test",
+                                "verify": "md5",
+                                "timestamp": 199992222,
+                                "topic": "test",
+                                "msgKey": "test_key",
+                                "msg": "test send message",
+                            };
+                            jsonDisplay(request, "request");
+                        </script>
+                    </tr>
+                </table>
+
+                <hr class="col-sm-12">
+                <p>返回格式:</p>
+                <br/>
+                <table class="col-sm-12">
+                    <tr><td>参数</td><td>类型</td><td>参数说明</td></tr>
+                    <tr><td>errCode</td><td>int</td><td>请求是否成功 0: 成功, 1: 失败</td></tr>
+                    <tr><td>errMsg</td><td>str</td><td>错误信息</td></tr>
+                    <tr><td>obj</td><td>json</td><td>其他信息</td></tr>
+                    <tr id="response">
+                        <script type="text/javascript">
+                            var res = {
+                                "errCode": 0,
+                                "errMsg": "",
+                                "obj": {},
+                            };
+                            jsonDisplay(res, "response");
+                        </script>
+                    </tr>
+                </table>
+            </div>
+
+            <h3 class="col-sm-offset-1"><font size="4">b.使用网站查询日志</font></h3>
+            <div class="col-sm-offset-2">
+                <ol>
+                    <li>
+                        1.点击主页中的<code>日志记录</code>
+                        <br/>
+                        <img alt="" width="35%" height="35%" src="{{ url_for('my_log.static', filename='my_static/img/web_use/1.png') }}"/>
+                    </li>
+                    <li>
+                        2.选择一个topic进行查询, 此时的消息是默认该topic所属的第一个message key. 后续可自由选择.
+                        <br/>
+                        <img alt="" width="35%" height="35%" src="{{ url_for('my_log.static', filename='my_static/img/web_use/2.png') }}"/>
+                    </li>
+                    <li>
+                        3.查询的消息如下图所示, 鼠标继续往下拉去会查询当前页面最早一条消息之前的消息
+                        <br/>
+                        <img alt="" width="35%" height="35%" src="{{ url_for('my_log.static', filename='my_static/img/web_use/3.png') }}"/>
+                        <ul>
+                            <li>
+                                注意: 最顶上的一行是筛选条件, 分别为选择topic,
+                                选择message key, 和查询某个时间点之前的消息(该时间点之后的消息都会过滤掉)
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+            <br/><br/>
+
+
+            <h2><font size="5">Ⅲ.负责人</font></h2>
+            <br/>
+            <p class="col-sm-offset-1">
+                负责人&nbsp;&nbsp;&nbsp;&nbsp;: 单文浩
+                <br/>
+                联系方式: 761542858(QQ)</p>
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block content %} {{ super() }} {% endblock %}
